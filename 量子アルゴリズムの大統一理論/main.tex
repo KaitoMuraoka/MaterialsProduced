@@ -12,45 +12,72 @@
 \usepackage{type1cm}
 \usepackage{qcircuit}
 
-\title{レポートタイトル}
+\title{量子アルゴリズムの大統一理論：量子特異値変換}
 
-\author{学生番号XXX-XXXX アカリク太郎}
+\author{9BSP1118 村岡海人}
 \date{\today}
-% \begin{document}
-% \maketitle
-% \section{Cloud LaTeXへようこそ}
-
-% Cloud LaTeXは，\LaTeX を使った文書の作成・管理をクラウド上で行えるWebサービスです．
-% \LaTeX を使うと，複雑な数式
-% \begin{equation}
-% \frac{\pi}{2} =
-% \left( \int_{0}^{\infty} \frac{\sin x}{\sqrt{x}} dx \right)^2 =
-% \sum_{k=0}^{\infty} \frac{(2k)!}{2^{2k}(k!)^2} \frac{1}{2k+1} =
-% \prod_{k=1}^{\infty} \frac{4k^2}{4k^2 - 1}
-% \end{equation}
-% を含んだ読みやすくきれいな文書作成ができます．
-
-% 本サービスは，\LaTeX 文書をリアルタイムに保存・コンパイルし，ユーザーアカウント別に管理します．
-% そのため，本サービスにログインするだけで，どこからでも作業を再開でき，ファイルを持ち歩く必要はありません．
-% また，様々な \LaTeX テンプレートが用意されているので，手軽に文書を作り始めることができます．
-% \begin{figure}
-% \centering
-% \includegraphics[width=70mm]{figures/Sample.png}
-% \caption{ここにキャプションを挿入します}
-% \label{fig:model}
-% \end{figure}
-
-% Cloud LaTeXでは，作成されるPDFそのままのレイアウトで表示するPDFビューモードがあり，コンパイル画面を確認しながら文書を作成することができます（図\ref{fig:model}）
-% 日本語では， \pLaTeX / \upLaTeX / \LuaLaTeX でのコンパイルが可能です．
-% また，日本語や英語文書作成だけでなく，中国語・ハングルに対応した \XeLaTeX のコンパイルも可能です．
-% ぜひ使ってみてください．
-% \end{document}
-
 \begin{document}
+\section{量子特異値変換}
+任意の行列が与えられた時に任意の特異値分解ができる。
+
+特異値とは、任意の行列$A$はユニタリー行列$W, V$を用いて、
+% Aは正方行列出なくても良い。
+\begin{align}
+    A = W \Sigma V^{\dagger}
+    \label{singular value}
+\end{align}
+と表される。ただし、$\Sigma$は対角行列。
+
+量子特異値変換は、(\ref{singular value})のように分解できる行列$A$がある際に、
+\begin{align}
+    U = W f(\Sigma)V^{\dagger} 
+\end{align}
+のようなユニタリー演算子を作ることができる。量子特異値変換の目的は、特異値を好きな関数へ変換することにある。
+
+\section{量子特異値変換の重要な要素}
+量子特異値変換を構成する重要な要素は、以下の3つである。
+\begin{itemize}
+    \item  量子信号処理(Quantum signal processing)
+    \item  量子ビット化(Qubitization)
+    \item  ブロック埋め込み(Block encoding)
+\end{itemize}
+がある。
+
+
 \section{量子信号処理}
 NMRにおける信号強度を上げるための合成パルスに由来
 
+\section{1量子ビットの回転ゲート}
+\subsection{パウリ行列}
+量子計算に必要となる量子ビットに対する演算子を定義する。
+最も重要な演算子に\textbf{パウリ演算子}がある。
+\begin{align}
+    I = \begin{pmatrix}
+    1 & 0 \\
+    0 & 1
+    \end{pmatrix},
+    X = \begin{pmatrix}
+    0 & 1 \\
+    1 & 0
+    \end{pmatrix},
+    Y = \begin{pmatrix}
+    0 & -i \\
+    i & 0
+    \end{pmatrix},
+    Z = \begin{pmatrix}
+    1 & 0 \\
+    0 & -1
+    \end{pmatrix}
+\end{align}
 
+\subsection{回転ゲート}
+ブロッホ球上で$x, y, z$軸に$\theta$回転するゲートである。
+\begin{align}
+    R_A(\theta) &= e^{-i (\theta / 2)A}\\
+    &= \cos(\theta / 2)I - i \sin(\theta / 2)A
+\end{align}
+
+\section{量子信号処理(Quantum signal processing)}
 \subsection{信号演算子}
 信号$a$に依存した$x$軸回転である。
 \begin{align}
@@ -59,46 +86,45 @@ NMRにおける信号強度を上げるための合成パルスに由来
     a & i \sqrt{i - a^2} \\
     i \sqrt{1 - a^2} & a
     \end{pmatrix}
-    &= R_X(-2 \arccos(a))
+    &= R_X(-2 \cos^{-1}(a))
 \end{align}
 
 \subsubsection{証明}
 以下証明である。
-% TODO: 計算が合わない
 \begin{flalign}
     \begin{pmatrix}
-    a i \sqrt{1 - a^2} \\
+    a & i \sqrt{1 - a^2} \\
     i \sqrt{1 - a^2} & a
     \end{pmatrix} =& a I + i \sqrt{1 - a^2} \\
-    =& \cos(\arccos(a))I + i \sin(\arccos(a))X  \\
+    =& \cos(\cos^{-1}(a))I + i \sin(\cos^{-1}(a))X  \\
     % (\because \sin(\arccos(a)) = \sqrt{1 - a^2}, \cos(\arccos(a)) = a) \\
-    =& \cos(\frac{2 \arccos(a)}{2})I - i \left(-i \sin(\frac{2 \arccos(a)}{2})\right)X \\
-    =& \cos(\frac{-2\arccos(a)}{2})I - i \sin(\frac{-2 \arccos(a)}{2})X \\
+    =& \cos(\frac{2 \cos^{-1}(a)}{2})I - i \left(-i \sin(\frac{2 \cos^{-1}(a)}{2})\right)X \\
+    =& \cos(\frac{-2\cos^{-1}(a)}{2})I - i \sin(\frac{-2 \cos^{-1}(a)}{2})X \\
     % (\because \sin(- \theta) = - \sin(\theta), \cos(- \theta) = \cos(\theta)) \\
-    =& e^{- i (\frac{-2 \arccos{a}}{2})X} \\
-    =& R_X (-2 \arccos{a})
+    =& e^{- i (\frac{-2 \cos^{-1}{a}}{2})X} \\
+    =& R_X (-2 \cos^{-1}{a})
 \end{flalign}
 
 \subsection{信号処理演算子}
-$z$軸に対する$-\phi$
+信号$a$を処理するために、$z$軸に対する$-2\phi$の回転として、
 \begin{align}
     S(\phi) = e^{i \phi Z}
 \end{align}
+と定義する。
 
 \subsection{量子信号処理操作(QSP)}
-これらを繰り返して定義
+これらを$d$回繰り返して定義
 
-量子信号処理は、$x$軸と$z$軸を繰り返し作用させる。
-
-$\phi$は任意である。(人間が調整してやってくださいねぇ〜)
+量子信号処理は、$x$軸と$z$軸を$d$回、繰り返し作用させる。
 
 % TODO:dについての記述がない
 
 \begin{align}
     U_{\vec{\phi}} = e^{i \phi_0 Z} \prod_{k = 1}^{d} W(a) e^{i \phi_k Z}
 \end{align}
+$\phi$は上手く人間側が上手く設定することによって、信号$a$を処理する。
 
-\section{量子信号処理：一般論}
+\subsection{量子信号処理：一般論}
 量子信号処理とは、ある条件を満たす多項式$P(a)$と$Q(a)$に対して、
 \begin{align}
     U_{\vec{\phi}} = e^{i\phi_0 Z} \prod^d_{k = 1} W(a)e^{i\phi_kZ}
@@ -106,8 +132,40 @@ $\phi$は任意である。(人間が調整してやってくださいねぇ〜)
     P(a) & iQ(a)\sqrt{1 - a^2} \\
     iQ^*(a)\sqrt{1 - a^2} & P^*(a)
     \end{pmatrix}
+    \label{Quantum Signal Processing: General Theory}
 \end{align}
 を満たすような$\vec{\phi}$が存在する。
+$x$軸と$z$軸回転を繰り返した 1量子ビットの回転ゲート。$z$軸回転は好きに決めて良い。
+
+ただし、多項式$P(a), Q(a)$には以下の条件が課せられる。
+\begin{itemize}
+    \item $P(a)$は$d$次以下、$Q(a)$は$(d - 1)$次以下の多項式
+    \item $P(a)$のパリティは$d \mod{2}$、$Q(a)$のパリティは$(d - 1) \mod{2}$
+    \item $| P |^2+ (1 - a^2)|Q|^2 = 1$
+\end{itemize}
+また、$\theta$を適切に選べば、条件を満たす関数であれば、必ず式(\ref{Quantum Signal Processing: General Theory})は成り立つ。
 
 % どういうふうにファイを設定するかを考えておく 
+
+\section{量子ビット化(Qubitization)}
+%  1量子ビットのような簡単な系ではなく、
+複雑な系でも2次元の部分空間を考えると、あたかも量子ビットの操作として議論できる。
+
+振幅増幅アルゴリズムを見ながら、量子ビット化の考え方を見ていく。
+
+\subsection{振幅増幅アルゴリズム}
+あるユニタリ、$U, U^{\dagger}$、および入力$A_{\phi}$と出力$B_\phi$
+
+\begin{align}
+    A_{\phi} = e^{i \phi \ket{A_0}\bra{A_0}}, B_{\phi} = e^{i \phi \ket{B_0}\bra{B_0}}
+\end{align}
+が与えられているときに、
+
+\begin{align}
+    |\bra{A_0} Q \ket{B_0}|^2 \rightarrow 1
+\end{align}
+% A_0を得る確率が限りなく1に近づくようにQを設定する
+となる$Q$を構成する。ただし、$\bra{A_0} U \ket{B_0}$は非ゼロとする。
+% TODO: 非ゼロとは？
+
 \end{document}
